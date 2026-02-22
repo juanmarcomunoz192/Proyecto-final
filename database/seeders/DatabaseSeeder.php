@@ -3,6 +3,12 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\Factura;
+use App\Models\Habitacion;
+use App\Models\Hotel;
+use App\Models\Reserva;
+use App\Models\Usuario;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -12,11 +18,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        Usuario::factory()->count(10)->create();
+        Hotel::factory()->count(10)->has(Habitacion::factory()->count(8), 'habitaciones')->create();
+        Reserva::factory()->count(10)->create()->each(function ($reserva) {
+            Factura::factory()->create(['reserva_id' => $reserva->id]);
+        });
     }
 }
