@@ -9,5 +9,6 @@ class Factura extends Model
 {
     use HasFactory;
     protected $table = 'factura';
+    protected $fillable = ['reserva_id', 'fecha', 'precio_total'];
     public $timestamps = true;
 }
