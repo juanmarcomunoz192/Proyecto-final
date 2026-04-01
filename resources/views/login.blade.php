@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('maincontent')
-    <section class="hero" role="banner" aria-labelledby="hero-title">
+        <section class="hero" role="banner" aria-labelledby="hero-title">
         <div class="inner">
             <div>
                 <h1 id="hero-title">Escápate. Relájate. Repite.</h1>
