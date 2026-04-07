@@ -18,7 +18,7 @@ class HotelesController extends Controller
         return response()->json($info, 200);
     }
 
-    
+
     /**
      * Store a newly created resource in storage.
      */
@@ -28,11 +28,15 @@ class HotelesController extends Controller
             'nombre' => 'required|string|max:255',
             'direccion' => 'required|string|max:255',
             'ciudad' => 'required|string|max:255',
+            'latitud'=>'required|decimal',
+            'longitud'=>'required|decimal'
         ]);
         $hotel = Hotel::create([
             'nombre' => $request->nombre,
             'direccion' => $request->direccion,
             'ciudad' => $request->ciudad,
+            'latitud' => $request->latitud,
+            'longitud' => $request->longitud
         ]);
         $info = ['status' => 'Ok', 'menssage' => 'Hotel creado con exito.....', 'data' => $hotel];
         return response()->json($info, 200);
