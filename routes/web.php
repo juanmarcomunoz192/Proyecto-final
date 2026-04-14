@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\HabitacionesController;
+use App\Http\Controllers\RegisterController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,7 +30,7 @@ Route::get('/contacto', function () {
 Route::get('/habitaciones', function () {
     return view('habitaciones');
 });
-
+Route::get('/habitaciones', [HabitacionesController::class, 'index']);
 Route::get('/login', function () {
     return view('login');
 });
@@ -36,3 +38,9 @@ Route::get('/login', function () {
 Route::get('/servicios', function () {
     return view('servicios');
 });
+Route::get('/register', function () {
+    return view('auth.register');
+});
+Route::post('/register', [RegisterController::class, 'register']);
+Route::post('/habitacion', [HabitacionesController::class, 'filtrado']);
+Route::get('/habitacion', [HabitacionesController::class, 'filtrado']);

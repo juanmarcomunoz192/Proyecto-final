@@ -12,11 +12,14 @@ class HabitacionesController extends Controller
      */
     public function index()
     {
+        return view('habitaciones');
+    }
+    public function obtenerTodasHabitaciones()
+    {
         $habitaciones = Habitacion::all();
         $info = ['status' => 'Ok', 'data' => $habitaciones];
         return response()->json($info, 200);
     }
-
 
     /**
      * Store a newly created resource in storage.
@@ -105,4 +108,26 @@ class HabitacionesController extends Controller
             return response()->json($info, 200);
         }
     }
+    public function filtrado(Request $request)
+    {
+        $query = Habitacion::query();
+
+
+        // Filtramos por tipo si el usuario ingresó uno
+        $query->when($request->filled('tipo'), function ($q) use ($request) {
+            $q->where('tipo', $request->tipo);
+        });
+        $query->when($request->filled('priceSlider'), function ($q) use ($request) {
+            $q->where('precio', '<=', $request->priceSlider);
+        });
+        $query->where('esta_disponible', 1);
+        // 1. Ejecutamos la consulta (usamos paginate por si hay muchos registros)
+        //$habitaciones = $query->paginate(15);
+        $habitaciones = $query->paginate(12);
+
+        // 2. Retornamos la vista Blade y le pasamos la variable $habitaciones
+        // (Asegúrate de que la ruta de la vista coincida con tus carpetas, ej: 'habitaciones.index')
+        return view('habitaciones', compact('habitaciones'));
+    }
+    
 }

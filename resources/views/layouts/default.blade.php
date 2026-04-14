@@ -5,8 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>HotelAurora</title>
+    <title>Hotel Aurora</title>
     <link rel="stylesheet" href="{{ asset('asset/css/proyecto.css') }}">
+    <link rel="stylesheet" href="{{ asset('asset/css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ asset('asset/css/sweetalert.css') }}">
+    <link rel="stylesheet" href="{{ asset('asset/css/fontAwesome.css') }}">
 </head>
 
 <body>
@@ -29,13 +32,7 @@
 
                     <button class="btn btn-primary cart-button cart-pill" onclick="viewCart()">
                         <span class="cart-icon-wrap">
-                            <!-- SVG cart icon (customizable) -->
-                            <svg class="cart-icon" viewBox="0 0 24 24" aria-hidden focusable="false" width="20"
-                                height="20">
-                                <path fill="currentColor"
-                                    d="M7 4h-2l-1 2H1v2h2l3.6 7.59-1.35 2.45C4.89 18.37 5.48 19 6.22 19h12.56v-2H6.42c-.07 0-.13-.03-.17-.08l.03-.07L7.1 16h8.45c.75 0 1.41-.41 1.75-1.03L21.92 6H6.21L5.27 4H7z">
-                                </path>
-                            </svg>
+                            <i class="fa-solid fa-cart-shopping"></i>
                             <span id="cart-count" class="cart-count">0</span>
                         </span>
                         <span class="cart-label">Cesta</span>
@@ -90,5 +87,7 @@
         </div>
     </footer>
 </body>
-
+<script src="{{ asset('asset/js/bootstrap.js') }}"></script>
+<script src="{{ asset('asset/js/sweetalert.js') }}"></script>
+<script src="{{ asset('asset/js/fontAwesome.js') }}"></script>
 </html>
