@@ -50,8 +50,8 @@
                     </div>
                     <div class="row">
                         <div class="col-12 col-md-6">
-                            <button onclick="limpiarFiltros()" title="Limpiar todos los filtros"
-                                class="  btn btn-sm btn-primary cart-button cart-pill">
+                            <button type="button" onclick="limpiarFiltros()" title="Limpiar todos los filtros"
+                                class="btn btn-sm btn-primary cart-button cart-pill">
                                 <i class="fa-solid fa-filter-circle-xmark pe-1"></i>Reseteo
                             </button>
                         </div>
@@ -85,11 +85,14 @@
 
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="h4 me-3">{{ number_format($habitacion->precio, 2) }}€</span>
-
-                                        <a href="/carrito" class="mb-4 btn btn-sm btn-primary cart-button cart-pill"
-                                            id="reserva">
-                                            <i class="fa-solid fa-calendar-check"></i>
-                                        </a>
+                                        <form action="/agregar" method="post">
+                                            @csrf
+                                            <input type="hidden" name="habitacion_id" value="{{ $habitacion->id }}">
+                                            <button type="submit"
+                                                class="mb-4 btn btn-sm btn-primary cart-button cart-pill">
+                                                <i class="fa-solid fa-calendar-check"></i>
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -139,13 +142,9 @@
 
             if (tipo) tipo.value = '';
             if (price) {
-                price.value = 200; // Valor por defecto
+                price.value = 200;
                 document.getElementById('maxPriceDisplay').textContent = '200€';
             }
-
-            // 2. Redirigir a la ruta base para "limpiar" la URL y la vista
-            // Esto asegura que al recargar no queden rastros de filtros anteriores
-            window.location.href = window.location.pathname;
         }
     </script>
 @endsection

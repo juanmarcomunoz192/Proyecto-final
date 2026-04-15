@@ -30,20 +30,40 @@
                     <a href="/servicios">Servicios</a>
                     <a href="/contacto">Contacto</a>
 
-                    <button class="btn btn-primary cart-button cart-pill" onclick="viewCart()">
+                    <a href="{{ route('carrito') }}" class="btn btn-primary cart-button cart-pill">
                         <span class="cart-icon-wrap">
                             <i class="fa-solid fa-cart-shopping"></i>
                             <span id="cart-count" class="cart-count">0</span>
                         </span>
                         <span class="cart-label">Cesta</span>
-                    </button>
+                    </a>
                     <div class="user-menu">
-                        <button id="auth-btn" class="btn btn-secondary" onclick="toggleUserMenu()">Iniciar
-                            Sesión</button>
-                        <div id="user-dropdown" class="user-dropdown">
-                            <div id="user-info" class="user-info"></div>
-                            <button onclick="logout()" class="logout-btn">Cerrar Sesión</button>
-                        </div>
+                        @auth
+                            <button class="btn btn-secondary dropdown-toggle" onclick="toggleDropdown()">
+                                <i class="fa-solid fa-user" style="margin-right: 8px;"></i>
+                                {{ Auth::user()->name }}
+                            </button>
+
+                            <div id="user-dropdown" class="user-dropdown" style="display: none;">
+                                <div id="user-info" class="user-info">
+                                    <strong>{{ Auth::user()->email }}</strong>
+                                    <small>{{ ucfirst(Auth::user()->role) }}</small>
+                                </div>
+                                <hr>
+                                <form action="{{ route('logout') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="logout-btn">
+                                        <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión
+                                    </button>
+                                </form>
+                            </div>
+                        @endauth
+
+                        @guest
+                            <button id="auth-btn" class="btn btn-secondary" onclick="showLoginModal()">
+                                Iniciar Sesión
+                            </button>
+                        @endguest
                     </div>
                 </div>
             </div>
@@ -86,8 +106,28 @@
             &copy; 2025 Hotel Aurora. Todos los derechos reservados.
         </div>
     </footer>
+
+
+    <x-auth-modal />
+
+
 </body>
 <script src="{{ asset('asset/js/bootstrap.js') }}"></script>
 <script src="{{ asset('asset/js/sweetalert.js') }}"></script>
 <script src="{{ asset('asset/js/fontAwesome.js') }}"></script>
+<script>
+    function toggleDropdown() {
+    const dropdown = document.getElementById('user-dropdown');
+    dropdown.style.display = (dropdown.style.display === 'none' || dropdown.style.display === '') 
+        ? 'block' 
+        : 'none';
+}
+
+// Cerrar si hacen click fuera
+window.addEventListener('click', function(e) {
+    if (!document.querySelector('.user-menu').contains(e.target)) {
+        document.getElementById('user-dropdown').style.display = 'none';
+    }
+});
+</script>
 </html>

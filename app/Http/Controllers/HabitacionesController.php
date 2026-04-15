@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\HabitacionesEstado;
 use App\Models\Habitacion;
 use Illuminate\Http\Request;
 
@@ -113,21 +114,15 @@ class HabitacionesController extends Controller
         $query = Habitacion::query();
 
 
-        // Filtramos por tipo si el usuario ingresó uno
         $query->when($request->filled('tipo'), function ($q) use ($request) {
             $q->where('tipo', $request->tipo);
         });
         $query->when($request->filled('priceSlider'), function ($q) use ($request) {
             $q->where('precio', '<=', $request->priceSlider);
         });
-        $query->where('esta_disponible', 1);
-        // 1. Ejecutamos la consulta (usamos paginate por si hay muchos registros)
-        //$habitaciones = $query->paginate(15);
+        $query->where('esta_disponible', HabitacionesEstado::Disponible->value);
         $habitaciones = $query->paginate(12);
 
-        // 2. Retornamos la vista Blade y le pasamos la variable $habitaciones
-        // (Asegúrate de que la ruta de la vista coincida con tus carpetas, ej: 'habitaciones.index')
         return view('habitaciones', compact('habitaciones'));
     }
-    
 }
