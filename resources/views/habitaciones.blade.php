@@ -48,18 +48,14 @@
                             value="200">
 
                     </div>
-                    <div class="row">
-                        <div class="col-12 col-md-6">
-                            <button type="button" onclick="limpiarFiltros()" title="Limpiar todos los filtros"
-                                class="btn btn-sm btn-primary cart-button cart-pill">
-                                <i class="fa-solid fa-filter-circle-xmark pe-1"></i>Reseteo
-                            </button>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <button type="submit" class="btn btn-sm btn-primary cart-button cart-pill text-center">
-                                <i class="fa-solid fa-filter pe-1"></i> Filtar
-                            </button>
-                        </div>
+                    <div class="filter-buttons">
+                        <button type="button" onclick="limpiarFiltros()" title="Limpiar todos los filtros"
+                            class="btn btn-sm btn-primary cart-button cart-pill">
+                            <i class="fa-solid fa-filter-circle-xmark pe-1"></i>Reseteo
+                        </button>
+                        <button type="submit" class="btn btn-sm btn-primary cart-button cart-pill">
+                            <i class="fa-solid fa-filter pe-1"></i> Filtar
+                        </button>
                     </div>
                 </form>
             </aside>
@@ -128,22 +124,26 @@
 
             function actualizarPrecioMax() {
                 const slider = document.getElementById('priceSlider');
-                const value = slider.value;
+                const value = parseInt(slider.value);
+                const min   = parseInt(slider.min) || 0;
+                const max   = parseInt(slider.max) || 10000;
+                const pct   = ((value - min) / (max - min)) * 100;
+                slider.style.setProperty('--fill', pct + '%');
                 document.getElementById('maxPriceDisplay').textContent = value + '€';
             }
-
 
         });
 
         function limpiarFiltros() {
-            // 1. Limpiar los valores en el DOM (basado en tus IDs reales)
-            const tipo = document.getElementById('tipo');
+            const tipo  = document.getElementById('tipo');
             const price = document.getElementById('priceSlider');
 
             if (tipo) tipo.value = '';
             if (price) {
-                price.value = 200;
-                document.getElementById('maxPriceDisplay').textContent = '200€';
+                price.value = price.max;
+                const pct = 100;
+                price.style.setProperty('--fill', pct + '%');
+                document.getElementById('maxPriceDisplay').textContent = price.max + '€';
             }
         }
     </script>

@@ -1,4 +1,4 @@
-version: '3.8'
+
 services:
   app:
     build:
@@ -37,7 +37,7 @@ services:
       MYSQL_USER: laravel 
       MYSQL_PASSWORD: laravel
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - dbdata:/var/lib/mysql
   phpmyadmin:

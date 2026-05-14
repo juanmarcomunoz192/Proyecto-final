@@ -30,7 +30,7 @@
                     <a href="/servicios">Servicios</a>
                     <a href="/contacto">Contacto</a>
 
-                    <a href="{{ route('carrito') }}" class="btn btn-primary cart-button cart-pill">
+                    <a href="{{ route('carrito') }}" class="cart-button cart-pill">
                         <span class="cart-icon-wrap">
                             <i class="fa-solid fa-cart-shopping"></i>
                             <span id="cart-count" class="cart-count">0</span>
