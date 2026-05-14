@@ -82,37 +82,7 @@
     <div id="toast-container" aria-live="polite"></div>
 
     <script>
-        const STORAGE_KEY = 'hotelAuroraCart';
-
-        function initCart() {
-            if (!localStorage.getItem(STORAGE_KEY)) {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
-            }
-        }
-
-        function getCart() {
-            initCart();
-            return JSON.parse(localStorage.getItem(STORAGE_KEY));
-        }
-
-        function saveCart(cart) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
-        }
-
-        // Función para actualizar el contador del carrito (consistencia entre páginas)
-        function updateCartUI() {
-            const cart = getCart();
-            const cartCountElement = document.getElementById('cart-count');
-            if (!cartCountElement) return;
-
-            if (cart.length > 0) {
-                cartCountElement.textContent = cart.length;
-                cartCountElement.style.display = 'flex';
-            } else {
-                cartCountElement.style.display = 'none';
-            }
-        }
-
+    
         // NUEVA FUNCIÓN TOAST
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
@@ -172,9 +142,5 @@
             // No se usa
         })();
 
-        document.addEventListener('DOMContentLoaded', function() {
-            initCart();
-            updateCartUI();
-        });
     </script>
 @endsection

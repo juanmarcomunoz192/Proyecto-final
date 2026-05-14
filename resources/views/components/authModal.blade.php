@@ -1,4 +1,4 @@
-<div class="boton-container">
+<div class="boton-container d-none" >
     <button {{ $attributes->merge(['class' => 'btn-base', 'id' => 'btn-' . uniqid()]) }} onclick="manejarClick(this)">
         {{ $slot }}
     </button>

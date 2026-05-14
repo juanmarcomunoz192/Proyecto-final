@@ -3,94 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Models\Habitacion;
+use App\Models\Hotel;
 use App\Models\Reserva;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
-class ReservasController extends Controller
+class AdminHabitacionesController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        // Cargamos la reserva con su habitación, el hotel de esa habitación y el usuario
-        $reservas = Reserva::where('usuario_id', auth()->id())
-            ->with(['habitacion', 'hotel', 'usuario'])
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $habitaciones = Habitacion::with('Hotel')->paginate(10);
 
-        return view('reservas', compact('reservas'));
+        return view("admin_habitaciones", ['habitaciones' => $habitaciones]);
     }
 
-    public function confirmar()
-    {
-        $carrito = session()->get('carrito', []);
 
-        if (empty($carrito)) {
-            return redirect()->back()->with('error', 'El carrito está vacío');
-        }
 
-        try {
-            // Usamos una transacción para que, si falla una reserva, no se guarde ninguna
-            DB::transaction(function () use ($carrito) {
-                foreach ($carrito as $item) {
-                    // Buscamos la habitación para obtener el hotel_id si no está en el carrito
-                    $habitacion = Habitacion::find($item['id']);
-
-                    Reserva::create([
-                        'hotel_id'      => $habitacion->hotel_id, // Columna Hotel_ID
-                        'habitacion_id' => $item['id'],            // Columna Habitacion_ID
-                        'usuario_id'    => auth()->id(),           // Columna Usuario_ID
-                        'fecha_entrada' => $item['entrada'],       // Columna Fecha_Entrada
-                        'fecha_salida'  => $item['salida'],        // Columna Fecha_Salida
-                        'precio_total'  => $item['precio'],        // Columna Precio_Total
-                        'estado'        => 'Confirmada',           // Estado por defecto
-                    ]);
-                    $habitacion->update([
-                        'esta_disponible' => 0
-                    ]);
-                }
-            });
-
-            // 1. Limpiar la sesión de PHP
-            session()->forget('carrito');
-
-            // 2. Redirigir a "Mis Reservas" con éxito
-            return response()->json([
-                'status' => 'Ok',
-                'message' => '¡Reserva realizada con éxito!'
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'Error',
-                'message' => 'Hubo un problema: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-    public function borrar(string $id)
-    {
-        // Buscamos la reserva
-        $reserva = Reserva::find($id);
-
-        if (!$reserva) {
-            return redirect()->route('reserva')->with('error', 'Reserva no encontrada.');
-        }
-
-        // SEGURIDAD CRÍTICA: 
-        // Forzamos a que ambos sean enteros para que la comparación sea exacta
-        if (intval($reserva->usuario_id) !== intval(auth()->id())) {
-            return redirect()->route('reserva')->with('error', 'No tienes permiso: Esta reserva no te pertenece.');
-        }
-
-        // Si pasa el filtro anterior, borramos
-        $reserva->delete();
-        $habitacion = Habitacion::find($reserva->habitacion_id);
-        $habitacion->update([
-            'esta_disponible' => 1
-        ]);
-        return redirect()->route('reserva')->with('success', 'Tu reserva ha sido cancelada correctamente.');
-    }
     /**
      * Store a newly created resource in storage.
      */
@@ -178,6 +108,83 @@ class ReservasController extends Controller
             $info = ['status' => 'Ok', 'message' => 'Reserva eliminada.....'];
             return response()->json($info, 200);
         }
+    }
+    public function borrar(string $id)
+    {
+        $habitacion = Habitacion::find($id);
+
+        if (!$habitacion) {
+            return redirect('admin/habitaciones')->with('error', 'Reserva no encontrada');
+        }
+
+        $habitacion->delete();
+
+        // 'success' es la llave que buscaremos luego en la vista
+        return redirect('admin/habitaciones')->with('success', 'La habitación  ha sido eliminada correctamente.');
+    }
+    public function actualizar(Request $request, string $id)
+    {
+        $habitacion = Habitacion::find($id);
+
+        if (!$habitacion) {
+            return redirect('admin/habitaciones')->with('error', 'Habitación no encontrada');
+        }
+
+        // 1. Validamos los campos REALES de la habitación
+        $request->validate([
+            'hotel_id' => 'required|integer',
+            'numero'   => 'required|string|max:10',
+            'tipo'     => 'required|string',
+            'precio'   => 'required|numeric|min:0',
+        ]);
+
+        // 2. Manejo del checkbox (si no se marca, no llega en el request)
+        $datos = $request->all();
+        $datos['esta_disponible'] = $request->has('esta_disponible') ? 1 : 0;
+
+        // 3. Actualizamos
+        $habitacion->update($datos);
+
+        // 4. Redirigimos (Usamos 'updated' para que coincida con el JS que hicimos)
+        return redirect('admin/habitaciones')->with('updated', 'La habitación ha sido actualizada correctamente.');
+    }
+    public function editar($id)
+    {
+        // 1. Buscamos la habitación en la base de datos usando el ID
+        $habitacion = Habitacion::findOrFail($id);
+
+        // 2. Retornamos la vista (el archivo donde está tu formulario)
+        // Nota: Si tu archivo está en 'resources/views/admin/habitaciones_edit.blade.php'
+        // debes poner 'admin.habitaciones_edit'
+        return view('admin_habitaciones_create', compact('habitacion'));
+    }
+    // 1. Mostrar la vista
+    public function crear()
+    {
+        return view('admin_habitaciones_create'); // Asegúrate de que el nombre coincida con tu archivo
+    }
+
+    // 2. Guardar en la base de datos
+    public function guardar(Request $request)
+    {
+        // Validación
+        $request->validate([
+            'hotel_id'      => 'required|integer',
+            'numero'        => 'required|string|max:10|unique:habitaciones,numero',
+            'tipo'          => 'required|string',
+            'precio'        => 'required|numeric|min:0',
+        ]);
+
+        // Crear la instancia
+        $habitacion = new Habitacion();
+        $habitacion->hotel_id = $request->hotel_id;
+        $habitacion->numero   = $request->numero;
+        $habitacion->tipo     = $request->tipo;
+        $habitacion->precio   = $request->precio;
+        $habitacion->esta_disponible = $request->has('esta_disponible') ? 1 : 0;
+
+        $habitacion->save();
+        return redirect()->route('habitaciones')->with('success', 'La nueva habitación se ha creado correctamente.');
     }
     public function agregar(Request $request)
     {

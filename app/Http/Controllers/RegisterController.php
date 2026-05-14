@@ -47,7 +47,7 @@ class RegisterController extends Controller
             'role' => UserRole::Admin->value,
             'password' => Hash::make($request->password), // ¡NUNCA guardes la contraseña en texto plano!
         ]);
-       
+
         // 3. Iniciar sesión automáticamente después de registrarse
         Auth::login($user);
 
@@ -71,7 +71,9 @@ class RegisterController extends Controller
         if (Auth::attempt($credentials, $remember)) {
             // 3. Si tiene éxito, regenerar la sesión (Medida de seguridad de Laravel 10)
             $request->session()->regenerate();
-
+            if (Auth::user()->role == UserRole::Admin->value) {
+                return redirect()->intended('/admin');
+            }
             return redirect()->intended('/habitacion')->with('success', '¡Has iniciado sesión!');
         }
 

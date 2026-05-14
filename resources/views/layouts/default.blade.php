@@ -29,11 +29,12 @@
                     <a href="/habitaciones">Habitaciones</a>
                     <a href="/servicios">Servicios</a>
                     <a href="/contacto">Contacto</a>
-
+                    <a href="/reservas">Reservas</a>
                     <a href="{{ route('carrito') }}" class="btn btn-primary cart-button cart-pill">
+                        <span id="cart-count" class="cart-count">0</span>
+
                         <span class="cart-icon-wrap">
                             <i class="fa-solid fa-cart-shopping"></i>
-                            <span id="cart-count" class="cart-count">0</span>
                         </span>
                         <span class="cart-label">Cesta</span>
                     </a>
@@ -50,6 +51,10 @@
                                     <small>{{ ucfirst(Auth::user()->role) }}</small>
                                 </div>
                                 <hr>
+                                @if (auth()->user()->role === \App\Enums\UserRole::Admin->value)
+                                    <a href="{{ route('admin') }}" class="logout-btn">Panel de Control Admin</a>
+                                @endif
+
                                 <form action="{{ route('logout') }}" method="POST">
                                     @csrf
                                     <button type="submit" class="logout-btn">
@@ -116,18 +121,53 @@
 <script src="{{ asset('asset/js/sweetalert.js') }}"></script>
 <script src="{{ asset('asset/js/fontAwesome.js') }}"></script>
 <script>
-    function toggleDropdown() {
-    const dropdown = document.getElementById('user-dropdown');
-    dropdown.style.display = (dropdown.style.display === 'none' || dropdown.style.display === '') 
-        ? 'block' 
-        : 'none';
-}
+    const STORAGE_KEY = 'hotelAuroraCart';
 
-// Cerrar si hacen click fuera
-window.addEventListener('click', function(e) {
-    if (!document.querySelector('.user-menu').contains(e.target)) {
-        document.getElementById('user-dropdown').style.display = 'none';
+    // 1. Definición de la función (Nombre exacto que pide tu consola)
+    function initCart() {
+
+        @if (session('carrito'))
+            const serverCart = @json(array_values(session('carrito')));
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(serverCart));
+        @endif
+
+        if (!localStorage.getItem(STORAGE_KEY)) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
+        }
     }
-});
+
+    function updateCartUI() {
+        const data = localStorage.getItem(STORAGE_KEY);
+        const cart = data ? JSON.parse(data) : [];
+        const countEl = document.getElementById('cart-count');
+
+        if (countEl) {
+            countEl.textContent = cart.length;
+            countEl.style.display = cart.length > 0 ? 'flex' : 'none';
+        }
+    }
+
+    // 2. EJECUCIÓN INMEDIATA
+    initCart();
+
+    function toggleDropdown() {
+        const dropdown = document.getElementById('user-dropdown');
+        if (dropdown) {
+            dropdown.style.display = (dropdown.style.display === 'none' || dropdown.style.display === '') ? 'block' :
+                'none';
+        }
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        updateCartUI();
+
+        // SEGURIDAD: Solo intentamos leer fechas si los inputs existen en esta página
+        const inputE = document.querySelector('input[name="fecha_entrada"]');
+        const inputS = document.querySelector('input[name="fecha_salida"]');
+
+        if (typeof renderCart === 'function') {
+            renderCart();
+        }
+    });
 </script>
+
 </html>

@@ -15,12 +15,14 @@
                 <form id="searchForm" action="/habitacion" method="GET">
                     <div class="search-grid">
                         <div class="field">
-                            <label for="checkin">Entrada</label>
-                            <input id="checkin" name="checkin" type="date" required />
+                            <label>Entrada</label>
+                            <input type="date" name="fecha_entrada" class="form-control"
+                                value="{{ request('fecha_entrada', date('Y-m-d')) }}" required>
                         </div>
                         <div class="field">
-                            <label for="checkout">Salida</label>
-                            <input id="checkout" name="checkout" type="date" required />
+                            <label>Salida</label>
+                            <input type="date" name="fecha_salida" class="form-control"
+                                value="{{ request('fecha_salida', date('Y-m-d', strtotime('+1 day'))) }}" required>
                         </div>
                         <div class="field">
                             <button type="submit" class="btn-primary" style="margin-top: 25px;">Buscar</button>

@@ -474,103 +474,81 @@ body {
     box-shadow: 0 2px 8px rgba(0, 47, 108, 0.1);
 }
 
-/* Cart Counter Badge */
+/* Contenedor principal del botón */
+.cart-pill {
+    position: relative;
+    overflow: visible !important;
+    background: #0b2533;
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    border: none;
+    box-shadow: 0 6px 18px rgba(2, 6, 23, 0.25);
+    text-decoration: none;
+    transition: transform 0.2s ease;
+}
+
+.cart-pill:hover {
+    transform: translateY(-2px);
+}
+
+/* El contador como "Tooltip Estático" arriba a la derecha */
 .cart-count {
     position: absolute;
-    top: -6px;
-    right: -6px;
+    /* Ajusta estos valores para mover la burbuja */
+    top: -10px; 
+    right: -8px;
+    
     background: linear-gradient(45deg, #ff6b35, #ff8c42);
     color: white;
     border-radius: 50%;
-    width: 22px;
-    height: 22px;
-    display: flex;
+    width: 24px;  /* Un poco más grande para legibilidad */
+    height: 24px;
+    display: flex; /* Se cambia a flex desde JS cuando el count > 0 */
     align-items: center;
     justify-content: center;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 800;
-    border: 3px solid #fff;
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
-    animation: pulse 2s infinite;
-    display: none;
-    /* Hidden by default */
+    border: 2px solid #fff; /* Borde blanco para destacar */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    
+    /* Animación lenta y suave */
+    animation: pulseSoft 3s infinite ease-in-out;
+    z-index: 10;
 }
 
-/* Asegura que la insignia del carrito se posicione respecto al botón */
-.cart-button {
-    position: relative;
-}
-
-/* Override del icono por defecto aplicado por .btn-primary::before */
-.cart-button::before {
-    content: none !important;
-}
-
-.cart-icon {
-    width: 20px;
-    height: 20px;
-    margin-right: 6px;
-    vertical-align: middle;
-    color: var(--blue-900);
-}
-
-/* Estilo tipo píldora para botón Cesta */
-.cart-pill {
-    background: #0b2533;
-    /* oscuro similar al adjunto */
-    color: #fff;
-    padding: 8px 12px;
-    border-radius: 10px;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    border: none;
-    box-shadow: 0 6px 18px rgba(2, 6, 23, 0.25);
-}
-
-.cart-pill .cart-icon {
-    color: #fff;
+/* Etiquetas e iconos */
+.cart-label {
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-left: 8px;
 }
 
 .cart-icon-wrap {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 8px;
-    /* separación entre icono+badge y texto */
+    font-size: 1.1rem;
 }
 
-/* Badge sobre el icono para la versión píldora */
-.cart-pill .cart-count {
-    top: -6px;
-    left: 22px;
-    right: auto;
-    width: 18px;
-    height: 18px;
-    font-size: 11px;
-    border: 2px solid #0b2533;
-    /* pequeño borde para recortar con el botón */
-}
-
-.cart-label {
-    color: #fff;
-    font-weight: 700;
-    font-size: 0.95rem;
-}
-
-@keyframes pulse {
+/* Animación Pulse más lenta y sutil */
+@keyframes pulseSoft {
     0% {
         transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.7);
     }
-
     50% {
-        transform: scale(1.1);
+        transform: scale(1.15);
+        box-shadow: 0 0 0 6px rgba(255, 107, 53, 0);
     }
-
     100% {
         transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 107, 53, 0);
     }
+}
+
+/* Eliminar efectos de otros botones de Laravel/Bootstrap que puedan estorbar */
+.cart-button::before {
+    content: none !important;
 }
 
 /* Botón Iniciar Sesión: Estilo Sólido y Premium */

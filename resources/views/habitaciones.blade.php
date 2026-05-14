@@ -23,7 +23,17 @@
 
                 <form action="/habitacion" method="post">
                     @csrf
+                    <div class="filter-group">
+                        <label for="fecha_entrada">Fecha de Entrada</label>
+                        <input type="date" id="fecha_entrada" name="fecha_entrada" class="form-control mb-2"
+                            value="{{ request('fecha_entrada') }}" required>
+                    </div>
 
+                    <div class="filter-group">
+                        <label for="fecha_salida">Fecha de Salida</label>
+                        <input type="date" id="fecha_salida" name="fecha_salida" class="form-control mb-3"
+                            value="{{ request('fecha_salida') }}" required>
+                    </div>
                     <!-- Tipo de habitación -->
                     <div class="filter-group">
                         <label for="tipo">Tipo de habitación</label>
@@ -85,12 +95,18 @@
 
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="h4 me-3">{{ number_format($habitacion->precio, 2) }}€</span>
-                                        <form action="/agregar" method="post">
+                                        <form action="{{ route('reserva.agregar') }}" method="post">
                                             @csrf
                                             <input type="hidden" name="habitacion_id" value="{{ $habitacion->id }}">
-                                            <button type="submit"
-                                                class="mb-4 btn btn-sm btn-primary cart-button cart-pill">
-                                                <i class="fa-solid fa-calendar-check"></i>
+
+                                            <!-- Estos campos ocultos son vitales para la validación -->
+                                            <input type="hidden" name="fecha_entrada"
+                                                value="{{ request('fecha_entrada') }}">
+                                            <input type="hidden" name="fecha_salida"
+                                                value="{{ request('fecha_salida') }}">
+
+                                            <button type="submit" class="btn btn-sm btn-primary cart-pill">
+                                                <i class="fa-solid fa-calendar-check"></i> Reservar
                                             </button>
                                         </form>
                                     </div>

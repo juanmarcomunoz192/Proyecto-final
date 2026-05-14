@@ -11,4 +11,8 @@ class Habitacion extends Model
     protected $table = 'habitaciones';
     protected $fillable = ['hotel_id', 'numero', 'tipo', 'precio', 'esta_disponible'];
     public $timestamps = true;
+    public function hotel()
+    {
+        return $this->belongsTo(Hotel::class, 'hotel_id');
+    }
 }

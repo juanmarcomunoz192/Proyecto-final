@@ -125,4 +125,33 @@ class HabitacionesController extends Controller
 
         return view('habitaciones', compact('habitaciones'));
     }
+    public function agregar(Request $request)
+    {
+        $request->validate([
+            'habitacion_id' => 'required|exists:habitaciones,id',
+            'fecha_entrada' => 'required|date|after_or_equal:today',
+            'fecha_salida' => 'required|date|after:fecha_entrada',
+        ]);
+
+        $habitacion = Habitacion::findOrFail($request->habitacion_id);
+        $carrito = session()->get('carrito', []);
+
+        $item = [
+            "id" => $habitacion->id,
+            "nombre" => "Habitación " . $habitacion->numero,
+            "precio" => (float)$habitacion->precio,
+            "tipo" => $habitacion->tipo,
+            "cantidad" => 1,
+            // Guardamos las fechas capturadas
+            "entrada" => $request->fecha_entrada,
+            "salida" => $request->fecha_salida,
+            "fecha_reserva" => $request->fecha_entrada
+        ];
+
+        $carrito[$habitacion->id] = $item;
+        session()->put('carrito', $carrito);
+        session()->save();
+
+        return redirect()->route('carrito')->with('success', 'Reserva añadida');
+    }
 }
