@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\HabitacionesEstado;
 use App\Models\Habitacion;
 use Illuminate\Http\Request;
 
@@ -12,11 +13,14 @@ class HabitacionesController extends Controller
      */
     public function index()
     {
+        return view('habitaciones');
+    }
+    public function obtenerTodasHabitaciones()
+    {
         $habitaciones = Habitacion::all();
         $info = ['status' => 'Ok', 'data' => $habitaciones];
         return response()->json($info, 200);
     }
-
 
     /**
      * Store a newly created resource in storage.
@@ -104,5 +108,50 @@ class HabitacionesController extends Controller
             $info = ['status' => 'Ok', 'message' => 'Habitacion eliminado eliminar..'];
             return response()->json($info, 200);
         }
+    }
+    public function filtrado(Request $request)
+    {
+        $query = Habitacion::query();
+
+
+        $query->when($request->filled('tipo'), function ($q) use ($request) {
+            $q->where('tipo', $request->tipo);
+        });
+        $query->when($request->filled('priceSlider'), function ($q) use ($request) {
+            $q->where('precio', '<=', $request->priceSlider);
+        });
+        $query->where('esta_disponible', HabitacionesEstado::Disponible->value);
+        $habitaciones = $query->paginate(12);
+
+        return view('habitaciones', compact('habitaciones'));
+    }
+    public function agregar(Request $request)
+    {
+        $request->validate([
+            'habitacion_id' => 'required|exists:habitaciones,id',
+            'fecha_entrada' => 'required|date|after_or_equal:today',
+            'fecha_salida' => 'required|date|after:fecha_entrada',
+        ]);
+
+        $habitacion = Habitacion::findOrFail($request->habitacion_id);
+        $carrito = session()->get('carrito', []);
+
+        $item = [
+            "id" => $habitacion->id,
+            "nombre" => "Habitación " . $habitacion->numero,
+            "precio" => (float)$habitacion->precio,
+            "tipo" => $habitacion->tipo,
+            "cantidad" => 1,
+            // Guardamos las fechas capturadas
+            "entrada" => $request->fecha_entrada,
+            "salida" => $request->fecha_salida,
+            "fecha_reserva" => $request->fecha_entrada
+        ];
+
+        $carrito[$habitacion->id] = $item;
+        session()->put('carrito', $carrito);
+        session()->save();
+
+        return redirect()->route('carrito')->with('success', 'Reserva añadida');
     }
 }

@@ -37,7 +37,7 @@ Route::put('/usuario/update/{id}', [UsuarioController::class, 'update']);
 Route::delete('/usuario/destroy/{id}', [UsuarioController::class, 'destroy']);
 
 /*RUTAS DE HABITACIÓN*/
-Route::get('/habitaciones', [HabitacionesController::class, 'index']);
+Route::get('/habitaciones', [HabitacionesController::class, 'obtenerTodasHabitaciones']);
 Route::post('/habitaciones/store', [HabitacionesController::class, 'store']);
 Route::get('/habitaciones/show/{id}', [HabitacionesController::class, 'show']);
 Route::put('/habitaciones/update/{id}', [HabitacionesController::class, 'update']);

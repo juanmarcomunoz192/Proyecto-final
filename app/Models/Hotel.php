@@ -10,7 +10,7 @@ class Hotel extends Model
     use HasFactory;
     protected $table = 'hoteles';
     public $timestamps = true;
-    protected $fillable = ['nombre', 'direccion', 'ciudad'];
+    protected $fillable = ['nombre', 'direccion', 'ciudad','latitud','longitud'];
     public function habitaciones()
     {
         return $this->hasMany(Habitacion::class);

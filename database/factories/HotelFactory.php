@@ -50,7 +50,9 @@ class HotelFactory extends Factory
         return [
             'nombre' => $hotel['nombre'],
             'direccion' => $hotel['direccion'] . ', España',
-            'ciudad' => $hotel['ciudad']
+            'ciudad' => $hotel['ciudad'],
+            'latitud' => $this->faker->latitude(36.0, 43.5),
+            'longitud' => $this->faker->longitude(-9.0, 3.0)
         ];
     }
 }
