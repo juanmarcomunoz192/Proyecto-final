@@ -42,6 +42,9 @@
                                     Eliminar
                                 </button>
                             </form>
+                            <a href="{{ route('factura.descargar', $reserva->id) }}" class="btn btn-warning btn-sm">
+                                Descargar PDF
+                            </a>
                         </div>
                     </td>
                 </tr>

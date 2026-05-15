@@ -9,6 +9,7 @@ use App\Http\Controllers\AdminHabitacionesController;
 use App\Http\Controllers\AdminHotelesController;
 use App\Http\Controllers\AdminReservasController;
 use App\Http\Controllers\AdminUsuarioController;
+use App\Http\Controllers\FacturasController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -63,10 +64,12 @@ Route::middleware('auth')->group(function () {
         return redirect('/carrito')->with('success', 'Carrito vaciado');
     })->name('carrito.vaciar');
 
-    Route::post('/carrito/confirmar', [ReservasController::class, 'confirmar'])->name('carrito.confirmar');Route::post('/logout', [RegisterController::class, 'logout'])->name('logout');
+    Route::post('/carrito/confirmar', [ReservasController::class, 'confirmar'])->name('carrito.confirmar');
+    Route::post('/logout', [RegisterController::class, 'logout'])->name('logout');
     Route::get('/carrito', function () {
         return view('carrito');
     })->name("carrito");
+    Route::get('/facturas/descargar/{id}', [FacturasController::class, 'descargarPdf'])->name('factura.descargar');
 });
 Route::middleware(['role:' . UserRole::User->value])->group(function () {
     Route::get('/reservas', [ReservasController::class, 'index'])->name("reserva");

@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Factura;
+use App\Models\Reserva;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+use Barryvdh\DomPDF\PDF;
 use Illuminate\Http\Request;
 
 class FacturasController extends Controller
@@ -119,5 +122,17 @@ class FacturasController extends Controller
                 'message' => 'Factura eliminada',
             ], 200);
         }
+    }
+    public function descargarPdf(string $id)
+    {
+        // Buscamos la RESERVA (porque es el ID que mandas desde la vista)
+        // Usamos 'with' para traer los datos del hotel, habitacion y usuario para que no de error
+        $reserva = Reserva::with(['hotel', 'habitacion', 'usuario'])->findOrFail($id);
+
+        // Pasamos la variable $reserva a la vista
+        $pdf = FacadePdf::loadView('pdf.factura', compact('reserva'));
+
+        // Generamos y descargamos el PDF
+        return $pdf->download('Reserva_' . $reserva->id . '_Hotel.pdf');
     }
 }
