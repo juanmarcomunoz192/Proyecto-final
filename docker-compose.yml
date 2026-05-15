@@ -8,10 +8,15 @@ services:
              php artisan key:generate --ansi && 
              php artisan migrate --seed && 
              php-fpm"
+    environment:
+      - XDEBUG_MODE=debug
+      - XDEBUG_CONFIG=client_host=172.17.0.1 start_with_request=yes log=/var/www/html/xdebug.log
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     container_name: gestion_hotelera
     volumes:
       - .:/var/www/html
-    depends_on:
+    depends_on: 
       - db
   web:
     image: nginx:alpine
