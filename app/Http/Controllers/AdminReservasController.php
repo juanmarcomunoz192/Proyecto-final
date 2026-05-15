@@ -52,7 +52,7 @@ class AdminReservasController extends Controller
         $reserva->precio_total  = $request->precio_total;
         $reserva->save();
 
-        return redirect()->route('reservas')->with('success', 'Reserva creada con éxito.');
+        return redirect()->route('admin.reservas')->with('success', 'Reserva creada con éxito.');
     }
 
     public function editar(string $id)
@@ -76,6 +76,6 @@ class AdminReservasController extends Controller
 
         $reserva->update($request->all());
 
-        return redirect()->route('reservas')->with('updated', 'La reserva ha sido modificada.');
+        return redirect()->route('admin.reservas')->with('updated', 'La reserva ha sido modificada.');
     }
 }
