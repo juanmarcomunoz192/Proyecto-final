@@ -177,7 +177,7 @@
             </button>
         </form>
         <div class="text-center">
-            <a href="{{ route('reservas') }}" class="link-regresar">← Volver al listado</a>
+            <a href="{{ route('admin.reservas') }}" class="link-regresar">← Volver al listado</a>
         </div>
     </div>
 </div>

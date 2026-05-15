@@ -86,7 +86,7 @@ Route::middleware(['role:' . UserRole::Admin->value])->group(function () {
     Route::get('/admin/users', [AdminUsuarioController::class, 'index'])->name("users");
     Route::get('/admin/facturas', [AdminFacturasController::class, 'index'])->name("facturas");
     Route::get('/admin/reservas', [AdminReservasController::class, 'index'])->name("reservas");
-    Route::get('/admin/reservas', [ReservasController::class, 'index'])->name("admin.reservas");
+    Route::get('/admin/reservas', [AdminReservasController::class, 'index'])->name("admin.reservas");
     //Eliminar
     Route::delete('/admin/habitaciones/{id}', [AdminHabitacionesController::class, 'borrar'])->name('habitaciones.borrar');
     Route::delete('/admin/hoteles/{id}', [AdminHotelesController::class, 'borrar'])->name('hoteles.borrar');
